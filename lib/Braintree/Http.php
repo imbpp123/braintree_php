@@ -181,10 +181,26 @@ class Http
 
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        if ($this->_config->getHttpBeforeRequestCallback()) {
+            $this->_config->getHttpBeforeRequestCallback()($url, $headers, $requestBody);
+        }
+
         $response = curl_exec($curl);
         $httpStatus = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         $error_code = curl_errno($curl);
         $error = curl_error($curl);
+
+        if ($this->_config->getHttpAfterRequestCallback()) {
+            $this->_config->getHttpAfterRequestCallback()(
+                [
+                    'http_status' => $httpStatus,
+                    'curl_error_code' => $error_code,
+                    'curl_error' => $error,
+                ],
+                $response
+            );
+        }
 
         if ($error_code == 28 && $httpStatus == 0) {
             throw new Exception\Timeout();

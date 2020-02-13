@@ -28,6 +28,8 @@ class Configuration
     private $_timeout = 60;
     private $_sslVersion = null;
     private $_acceptGzipEncoding = true;
+    private $_httpBeforeRequestCallback = null;
+    private $_httpAfterRequestCallback = null;
 
     /**
      * Braintree API version to use
@@ -349,6 +351,44 @@ class Configuration
     public function setPrivateKey($value)
     {
         $this->_privateKey = $value;
+    }
+
+    /**
+     * @return Closure|null
+     */
+    public function getHttpBeforeRequestCallback()
+    {
+        return $this->_httpBeforeRequestCallback;
+    }
+
+    /**
+     * @param \Closure $httpBeforeRequestCallback
+     *
+     * @return self
+     */
+    public function setHttpBeforeRequestCallback(\Closure $httpBeforeRequestCallback)
+    {
+        $this->_httpBeforeRequestCallback = $httpBeforeRequestCallback;
+        return $this;
+    }
+
+    /**
+     * @return null
+     */
+    public function getHttpAfterRequestCallback()
+    {
+        return $this->_httpAfterRequestCallback;
+    }
+
+    /**
+     * @param \Closure $httpAfterRequestCallback
+     *
+     * @return self
+     */
+    public function setHttpAfterRequestCallback(\Closure $httpAfterRequestCallback)
+    {
+        $this->_httpAfterRequestCallback = $httpAfterRequestCallback;
+        return $this;
     }
 
     private function setProxyHost($value)
